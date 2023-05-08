@@ -1,6 +1,8 @@
 import 'dart:math';
 
+import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -14,22 +16,87 @@ class MainMenu extends StatefulWidget {
   State<MainMenu> createState() => _MainMenuState();
 }
 
-class _MainMenuState extends State<MainMenu> {
+class _MainMenuState extends State<MainMenu> with TickerProviderStateMixin {
+  final iconList = <IconData>[
+    Icons.home,
+    Icons.calendar_month_outlined,
+    Icons.bar_chart,
+    Icons.settings_outlined,
+  ];
+  var _bottomNavIndex = 0; //default index of a first screen
+  late AnimationController _fabAnimationController;
+  late AnimationController _borderRadiusAnimationController;
+  late Animation<double> fabAnimation;
+  late Animation<double> borderRadiusAnimation;
+  late CurvedAnimation fabCurve;
+  late CurvedAnimation borderRadiusCurve;
+  late AnimationController _hideBottomBarAnimationController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Ads
+
+    // Bottom Nav Bar
+    final systemTheme = SystemUiOverlayStyle.light.copyWith(
+      systemNavigationBarColor: const Color(0xFF373A36),
+      systemNavigationBarIconBrightness: Brightness.light,
+    );
+    SystemChrome.setSystemUIOverlayStyle(systemTheme);
+
+    _fabAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+    _borderRadiusAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+    fabCurve = CurvedAnimation(
+      parent: _fabAnimationController,
+      curve: const Interval(0.5, 1.0, curve: Curves.fastOutSlowIn),
+    );
+    borderRadiusCurve = CurvedAnimation(
+      parent: _borderRadiusAnimationController,
+      curve: const Interval(0.5, 1.0, curve: Curves.fastOutSlowIn),
+    );
+
+    fabAnimation = Tween<double>(begin: 0, end: 1).animate(fabCurve);
+    borderRadiusAnimation = Tween<double>(begin: 0, end: 1).animate(
+      borderRadiusCurve,
+    );
+
+    _hideBottomBarAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+
+    Future.delayed(
+      const Duration(seconds: 1),
+      () => _fabAnimationController.forward(),
+    );
+    Future.delayed(
+      const Duration(seconds: 1),
+      () => _borderRadiusAnimationController.forward(),
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {},
-          backgroundColor: Colors.blueAccent,
-          child: const Icon(Icons.note_add),
-        ),
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           title: Padding(
             padding: const EdgeInsets.all(10.0),
             child: Text(
-              'Notes',
+              'TaskNotes',
               style: GoogleFonts.montserrat(
                 fontWeight: FontWeight.w600,
                 color: Theme.of(context).brightness == Brightness.dark
@@ -54,7 +121,7 @@ class _MainMenuState extends State<MainMenu> {
               builder: (context, provider, child) {
                 return PopupMenuButton(
                   icon: Icon(
-                    Icons.more_vert,
+                    Icons.notifications_none,
                     color: Theme.of(context).brightness == Brightness.light
                         ? const Color(0xFF071e26)
                         : Colors.white,
@@ -83,11 +150,90 @@ class _MainMenuState extends State<MainMenu> {
             ),
           ],
         ),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: const Color(0xFFFFA400),
+          child: const Icon(
+            Icons.add,
+            color: Color(0xFF373A36),
+          ),
+          onPressed: () {},
+          //params
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        bottomNavigationBar: AnimatedBottomNavigationBar.builder(
+          itemCount: iconList.length,
+          tabBuilder: (int index, bool isActive) {
+            final color = isActive ? const Color(0xFFFFA400) : Colors.white;
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  iconList[index],
+                  size: 24,
+                  color: color,
+                ),
+              ],
+            );
+          },
+          height: 50,
+          splashRadius: 0,
+          activeIndex: _bottomNavIndex,
+          gapLocation: GapLocation.center,
+          notchSmoothness: NotchSmoothness.smoothEdge,
+          backgroundColor: const Color(0xFF373A36),
+          notchAndCornersAnimation: borderRadiusAnimation,
+          hideAnimationController: _hideBottomBarAnimationController,
+          onTap: (index) => setState(() => _bottomNavIndex = index),
+          //other params
+        ),
+        extendBody: true,
         body: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
           child: SingleChildScrollView(
             child: Column(
               children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Notes',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
+                    GestureDetector(
+                      onTap: () {},
+                      child: const Text(
+                        'Show all',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                SizedBox(
+                  height: 100,
+                  child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      shrinkWrap: true,
+                      itemCount: 5,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 0, horizontal: 3),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(5.0),
+                            ),
+                            width: 180,
+                          ),
+                        );
+                      }),
+                ),
                 const SizedBox(
                   height: 20,
                 ),
@@ -113,15 +259,25 @@ class _MainMenuState extends State<MainMenu> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text(
-                            'Notes Shown',
+                            "Events",
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 20),
                           ),
-                          IconButton(
-                              splashColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              onPressed: () {},
-                              icon: const Icon(Icons.sort))
+                          Row(
+                            children: [
+                              const Text(
+                                '26/03/2023',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 20),
+                              ),
+                              IconButton(
+                                splashColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
+                                onPressed: () {},
+                                icon: const Icon(Icons.date_range),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                       const Divider(
@@ -130,65 +286,6 @@ class _MainMenuState extends State<MainMenu> {
                         endIndent: 0,
                         color: Colors.grey,
                       ),
-                      Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            GestureDetector(
-                              onTap: () {},
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: const [
-                                  Icon(
-                                    Icons.file_copy_outlined,
-                                    size: 60,
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text('Notes'),
-                                ],
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {},
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: const [
-                                  Icon(
-                                    Icons.folder_outlined,
-                                    size: 60,
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text('Group'),
-                                ],
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {},
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: const [
-                                  Icon(
-                                    Icons.calendar_month_outlined,
-                                    size: 60,
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text('Event'),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
                     ],
                   ),
                 ),
