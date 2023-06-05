@@ -3,8 +3,10 @@ import 'dart:math';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:notes/provider/animated_container_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/theme_provider.dart';
@@ -80,11 +82,6 @@ class _MainMenuState extends State<MainMenu> with TickerProviderStateMixin {
       const Duration(seconds: 1),
       () => _borderRadiusAnimationController.forward(),
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   @override
@@ -193,6 +190,111 @@ class _MainMenuState extends State<MainMenu> with TickerProviderStateMixin {
           child: SingleChildScrollView(
             child: Column(
               children: [
+                const SizedBox(
+                  height: 10,
+                ),
+                Consumer<AnimatedContainerProvider>(
+                    builder: (context, provider, child) {
+                  return Container(
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Color(0xFF3b3b4d),
+                          Color(0xFF272636),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              "Events",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 20),
+                            ),
+                            Row(
+                              children: [
+                                const Text(
+                                  '26/03/2023',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20),
+                                ),
+                                IconButton(
+                                  splashColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  onPressed: () {},
+                                  icon: const Icon(Icons.date_range),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        const Divider(
+                          height: 20,
+                          thickness: 1,
+                          endIndent: 0,
+                          color: Colors.grey,
+                        ),
+                        AnimatedContainer(
+                            padding: const EdgeInsets.all(5),
+                            height: Provider.of<AnimatedContainerProvider>(
+                                    context,
+                                    listen: true)
+                                .value,
+                            color: Colors.red,
+                            duration: .3.seconds,
+                            child: ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: 5,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 5, horizontal: 5),
+                                    child: Container(
+                                      color: Colors.green,
+                                      height: 90,
+                                    ),
+                                  );
+                                })),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            if (provider.expandC == false) {
+                              provider.expandCont();
+                            } else if (provider.expandC == true) {
+                              provider.shrinkCont();
+                            }
+                          },
+                          child: const SizedBox(
+                            height: 20,
+                            child: Center(
+                              child: Text(
+                                'Show all',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ).animate().fadeIn(delay: 1.seconds, duration: .7.seconds);
+                }),
+                const SizedBox(
+                  height: 20,
+                ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -210,85 +312,95 @@ class _MainMenuState extends State<MainMenu> with TickerProviderStateMixin {
                       ),
                     ),
                   ],
-                ),
+                ).animate().fadeIn(delay: 1.5.seconds, duration: .7.seconds),
                 const SizedBox(
                   height: 20,
                 ),
                 SizedBox(
                   height: 100,
                   child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      shrinkWrap: true,
-                      itemCount: 5,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 0, horizontal: 3),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.red,
-                              borderRadius: BorderRadius.circular(5.0),
-                            ),
-                            width: 180,
-                          ),
-                        );
-                      }),
+                          scrollDirection: Axis.horizontal,
+                          shrinkWrap: true,
+                          itemCount: 5,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 0, horizontal: 3),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.circular(5.0),
+                                ),
+                                width: 180,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 0, horizontal: 5),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          const Text(
+                                            'Title',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 20),
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
+                                          ),
+                                          GestureDetector(
+                                              onTap: () {},
+                                              child: const Icon(
+                                                Icons.open_in_new,
+                                                size: 20,
+                                              ))
+                                        ],
+                                      ),
+                                      const Divider(
+                                        height: 20,
+                                        thickness: 1,
+                                        endIndent: 0,
+                                        color: Colors.grey,
+                                      ),
+                                      Text(
+                                        'Titl xgdsdgs seg segse se aejabewoa aqw aobwf afw akfn abnwflabnw wajbwfajbwfa wajwfbaobfwabwfe',
+                                        style: TextStyle(fontSize: 14),
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 3,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          })
+                      .animate()
+                      .fadeIn(delay: 1.5.seconds, duration: .7.seconds),
                 ),
                 const SizedBox(
                   height: 20,
                 ),
-                Container(
-                  height: 200,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Color(0xFF3b3b4d),
-                        Color(0xFF272636),
-                      ],
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Task',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                     ),
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            "Events",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 20),
-                          ),
-                          Row(
-                            children: [
-                              const Text(
-                                '26/03/2023',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 20),
-                              ),
-                              IconButton(
-                                splashColor: Colors.transparent,
-                                highlightColor: Colors.transparent,
-                                onPressed: () {},
-                                icon: const Icon(Icons.date_range),
-                              ),
-                            ],
-                          ),
-                        ],
+                    GestureDetector(
+                      onTap: () {},
+                      child: const Text(
+                        'Show all',
+                        style: TextStyle(color: Colors.grey),
                       ),
-                      const Divider(
-                        height: 20,
-                        thickness: 1,
-                        endIndent: 0,
-                        color: Colors.grey,
-                      ),
-                    ],
-                  ),
-                ),
+                    ),
+                  ],
+                ).animate().fadeIn(delay: 2.seconds, duration: .7.seconds),
                 const SizedBox(
                   height: 20,
                 ),
@@ -338,7 +450,7 @@ class _MainMenuState extends State<MainMenu> with TickerProviderStateMixin {
                       ),
                     );
                   },
-                ),
+                ).animate().fadeIn(delay: 2.seconds, duration: .7.seconds),
               ],
             ),
           ),

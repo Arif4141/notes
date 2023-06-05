@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:notes/provider/animated_container_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'menu/main_menu.dart';
 import 'provider/theme_provider.dart';
 
 void main() {
+  Animate.restartOnHotReload = true;
   runApp(
     MultiProvider(providers: [
       ChangeNotifierProvider<ThemeProvider>(
         create: (_) => ThemeProvider(),
+      ),
+      ChangeNotifierProvider<AnimatedContainerProvider>(
+        create: (_) => AnimatedContainerProvider(),
       ),
     ], child: const MyApp()),
   );
