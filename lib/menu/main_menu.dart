@@ -1,18 +1,16 @@
-import 'dart:math';
-
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:notes/provider/animated_container_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../provider/theme_provider.dart';
 
 class MainMenu extends StatefulWidget {
-  const MainMenu({Key? key}) : super(key: key);
+  const MainMenu({Key? key, required String title}) : super(key: key);
 
   @override
   State<MainMenu> createState() => _MainMenuState();
@@ -33,6 +31,27 @@ class _MainMenuState extends State<MainMenu> with TickerProviderStateMixin {
   late CurvedAnimation fabCurve;
   late CurvedAnimation borderRadiusCurve;
   late AnimationController _hideBottomBarAnimationController;
+  List<DropdownMenuItem<String>> get dropdownItems {
+    List<DropdownMenuItem<String>> menuItems = const [
+      DropdownMenuItem(value: "This Week", child: Text("This Week")),
+      DropdownMenuItem(value: "This Month", child: Text("This Month")),
+      DropdownMenuItem(value: "This Year", child: Text("This Year")),
+    ];
+    return menuItems;
+  }
+
+  String selectedValue = "This Week";
+
+  List<_PieData> pieData = [
+    _PieData(
+      'Jan',
+      35,
+    ),
+    _PieData(
+      '',
+      65,
+    ),
+  ];
 
   @override
   void initState() {
@@ -212,16 +231,32 @@ class _MainMenuState extends State<MainMenu> with TickerProviderStateMixin {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text(
-                              "Events",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 20),
-                            ),
+                            DropdownButton<String>(
+                                alignment: Alignment.center,
+                                value: selectedValue,
+                                elevation: 16,
+                                icon: const SizedBox.shrink(),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 20),
+                                items: dropdownItems,
+                                onChanged: (String? value) {
+                                  setState(() {
+                                    selectedValue = value!;
+                                  });
+                                }),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
+                                IconButton(
+                                  splashColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  onPressed: () {},
+                                  icon: const Icon(Icons.chevron_left),
+                                ),
                                 const Text(
                                   '26/03/2023',
                                   style: TextStyle(
@@ -232,7 +267,7 @@ class _MainMenuState extends State<MainMenu> with TickerProviderStateMixin {
                                   splashColor: Colors.transparent,
                                   highlightColor: Colors.transparent,
                                   onPressed: () {},
-                                  icon: const Icon(Icons.date_range),
+                                  icon: const Icon(Icons.chevron_right),
                                 ),
                               ],
                             ),
@@ -262,7 +297,7 @@ class _MainMenuState extends State<MainMenu> with TickerProviderStateMixin {
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 5, horizontal: 5),
                                     child: Container(
-                                      color: Colors.green,
+                                      color: Colors.grey,
                                       height: 90,
                                     ),
                                   );
@@ -278,12 +313,14 @@ class _MainMenuState extends State<MainMenu> with TickerProviderStateMixin {
                               provider.shrinkCont();
                             }
                           },
-                          child: const SizedBox(
+                          child: SizedBox(
                             height: 20,
                             child: Center(
                               child: Text(
-                                'Show all',
-                                style: TextStyle(color: Colors.grey),
+                                provider.expandC == false
+                                    ? "Show More"
+                                    : "Show Less",
+                                style: const TextStyle(color: Colors.grey),
                               ),
                             ),
                           ),
@@ -388,7 +425,7 @@ class _MainMenuState extends State<MainMenu> with TickerProviderStateMixin {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
-                      'Task',
+                      'All Task',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                     ),
@@ -404,53 +441,137 @@ class _MainMenuState extends State<MainMenu> with TickerProviderStateMixin {
                 const SizedBox(
                   height: 20,
                 ),
-                MasonryGridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: 4,
-                  mainAxisSpacing: 15,
-                  crossAxisSpacing: 15,
-                  gridDelegate:
-                      const SliverSimpleGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2),
-                  itemBuilder: (contex, index) {
-                    Random rnd;
-                    int min = 150;
-                    int max = 350;
-                    rnd = Random();
-                    int r = min + rnd.nextInt(max - min);
-                    double h = r.toDouble();
-
-                    return Container(
-                      height: h,
-                      decoration: BoxDecoration(
-                        color: Colors.blueAccent,
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Title',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 25,
-                              overflow: TextOverflow.ellipsis,
+                ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: 3,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(5.0),
+                              ),
+                              height: 150,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            const Text(
+                                              'Title',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 25),
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 1,
+                                            ),
+                                            GestureDetector(
+                                                onTap: () {},
+                                                child: const Icon(
+                                                  Icons.open_in_new,
+                                                  size: 20,
+                                                ))
+                                          ],
+                                        ),
+                                        Text(
+                                          'Sub Title',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 14),
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                        ),
+                                      ],
+                                    ),
+                                    const Divider(
+                                      height: 20,
+                                      thickness: 1,
+                                      endIndent: 0,
+                                      color: Colors.grey,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Container(
+                                          height: 65,
+                                          width: 260,
+                                          color: Colors.grey,
+                                          child: Text(
+                                            'Titl xgdsdgs seg segse se aejabewoa aqw aobwf afw akfn abnwflabnw wajbwfajbwfa wajwfbaobfwabwfe',
+                                            style: TextStyle(fontSize: 14),
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 3,
+                                          ),
+                                        ),
+                                        Container(
+                                          height: 65,
+                                          width: 65,
+                                          color: Colors.grey,
+                                          child: Stack(
+                                            children: [
+                                              SfCircularChart(
+                                                legend:
+                                                    Legend(isVisible: false),
+                                                palette: const [
+                                                  Colors.blueAccent,
+                                                  Colors.white
+                                                ],
+                                                series: <DoughnutSeries<
+                                                    _PieData, String>>[
+                                                  DoughnutSeries<_PieData,
+                                                          String>(
+                                                      radius: '120%',
+                                                      innerRadius: '80%',
+                                                      explode: false,
+                                                      dataSource: pieData,
+                                                      xValueMapper:
+                                                          (_PieData data, _) =>
+                                                              data.xData,
+                                                      yValueMapper:
+                                                          (_PieData data, _) =>
+                                                              data.yData,
+                                                      dataLabelSettings:
+                                                          const DataLabelSettings(
+                                                              isVisible:
+                                                                  false)),
+                                                ],
+                                              ),
+                                              Center(
+                                                child: Text(
+                                                  "35%",
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 15),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
-                            maxLines: 1,
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          //
-                          // Contents
-                          //
-                        ],
-                      ),
-                    );
-                  },
-                ).animate().fadeIn(delay: 2.seconds, duration: .7.seconds),
+                          );
+                        })
+                    .animate()
+                    .fadeIn(delay: 1.5.seconds, duration: .7.seconds),
+                const SizedBox(
+                  height: 20,
+                )
               ],
             ),
           ),
@@ -458,4 +579,10 @@ class _MainMenuState extends State<MainMenu> with TickerProviderStateMixin {
       ),
     );
   }
+}
+
+class _PieData {
+  _PieData(this.xData, this.yData);
+  final String xData;
+  final num yData;
 }
