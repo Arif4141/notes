@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:notes/menu/add_event_menu.dart';
 import 'package:notes/provider/animated_container_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -10,7 +11,9 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import '../provider/theme_provider.dart';
 
 class MainMenu extends StatefulWidget {
-  const MainMenu({Key? key, required String title}) : super(key: key);
+  const MainMenu({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<MainMenu> createState() => _MainMenuState();
@@ -172,7 +175,13 @@ class _MainMenuState extends State<MainMenu> with TickerProviderStateMixin {
             Icons.add,
             color: Color(0xFF373A36),
           ),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const AddEventMenu(),
+              ),
+            );
+          },
           //params
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -231,15 +240,18 @@ class _MainMenuState extends State<MainMenu> with TickerProviderStateMixin {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
+                            const Text(
+                              'Task To Do: ',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 20),
+                            ),
                             DropdownButton<String>(
                                 alignment: Alignment.center,
                                 value: selectedValue,
                                 elevation: 16,
-                                icon: const SizedBox.shrink(),
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 20),
                                 items: dropdownItems,
@@ -248,29 +260,6 @@ class _MainMenuState extends State<MainMenu> with TickerProviderStateMixin {
                                     selectedValue = value!;
                                   });
                                 }),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                IconButton(
-                                  splashColor: Colors.transparent,
-                                  highlightColor: Colors.transparent,
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.chevron_left),
-                                ),
-                                const Text(
-                                  '26/03/2023',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20),
-                                ),
-                                IconButton(
-                                  splashColor: Colors.transparent,
-                                  highlightColor: Colors.transparent,
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.chevron_right),
-                                ),
-                              ],
-                            ),
                           ],
                         ),
                         const Divider(
@@ -442,133 +431,133 @@ class _MainMenuState extends State<MainMenu> with TickerProviderStateMixin {
                   height: 20,
                 ),
                 ListView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: 3,
-                        itemBuilder: (BuildContext context, int index) {
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.circular(5.0),
-                              ),
-                              height: 150,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: 3,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(
+                            maxHeight: 150.0,
+                          ),
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(5.0),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          const Text(
+                                            'Title',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 25),
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
+                                          ),
+                                          GestureDetector(
+                                              onTap: () {},
+                                              child: const Icon(
+                                                Icons.open_in_new,
+                                                size: 20,
+                                              ))
+                                        ],
+                                      ),
+                                      Text(
+                                        'Sub Title',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 14),
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                      ),
+                                    ],
+                                  ),
+                                  const Divider(
+                                    height: 20,
+                                    thickness: 1,
+                                    endIndent: 0,
+                                    color: Colors.grey,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Container(
+                                        height: 65,
+                                        width: 260,
+                                        color: Colors.grey,
+                                        child: Text(
+                                          'Titl xgdsdgs seg segse se aejabewoa aqw aobwf afw akfn abnwflabnw wajbwfajbwfa wajwfbaobfwabwfe',
+                                          style: TextStyle(fontSize: 14),
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 3,
+                                        ),
+                                      ),
+                                      Container(
+                                        height: 65,
+                                        width: 65,
+                                        color: Colors.grey,
+                                        child: Stack(
                                           children: [
-                                            const Text(
-                                              'Title',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 25),
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 1,
+                                            SfCircularChart(
+                                              legend: Legend(isVisible: false),
+                                              palette: const [
+                                                Colors.blueAccent,
+                                                Colors.white
+                                              ],
+                                              series: <DoughnutSeries<_PieData,
+                                                  String>>[
+                                                DoughnutSeries<_PieData,
+                                                        String>(
+                                                    animationDelay: 0.7,
+                                                    radius: '120%',
+                                                    innerRadius: '80%',
+                                                    explode: false,
+                                                    dataSource: pieData,
+                                                    xValueMapper:
+                                                        (_PieData data, _) =>
+                                                            data.xData,
+                                                    yValueMapper:
+                                                        (_PieData data, _) =>
+                                                            data.yData,
+                                                    dataLabelSettings:
+                                                        const DataLabelSettings(
+                                                            isVisible: false)),
+                                              ],
                                             ),
-                                            GestureDetector(
-                                                onTap: () {},
-                                                child: const Icon(
-                                                  Icons.open_in_new,
-                                                  size: 20,
-                                                ))
+                                            Center(
+                                              child: Text(
+                                                "35%",
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 15),
+                                              ),
+                                            ),
                                           ],
                                         ),
-                                        Text(
-                                          'Sub Title',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 14),
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 1,
-                                        ),
-                                      ],
-                                    ),
-                                    const Divider(
-                                      height: 20,
-                                      thickness: 1,
-                                      endIndent: 0,
-                                      color: Colors.grey,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Container(
-                                          height: 65,
-                                          width: 260,
-                                          color: Colors.grey,
-                                          child: Text(
-                                            'Titl xgdsdgs seg segse se aejabewoa aqw aobwf afw akfn abnwflabnw wajbwfajbwfa wajwfbaobfwabwfe',
-                                            style: TextStyle(fontSize: 14),
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 3,
-                                          ),
-                                        ),
-                                        Container(
-                                          height: 65,
-                                          width: 65,
-                                          color: Colors.grey,
-                                          child: Stack(
-                                            children: [
-                                              SfCircularChart(
-                                                legend:
-                                                    Legend(isVisible: false),
-                                                palette: const [
-                                                  Colors.blueAccent,
-                                                  Colors.white
-                                                ],
-                                                series: <DoughnutSeries<
-                                                    _PieData, String>>[
-                                                  DoughnutSeries<_PieData,
-                                                          String>(
-                                                      radius: '120%',
-                                                      innerRadius: '80%',
-                                                      explode: false,
-                                                      dataSource: pieData,
-                                                      xValueMapper:
-                                                          (_PieData data, _) =>
-                                                              data.xData,
-                                                      yValueMapper:
-                                                          (_PieData data, _) =>
-                                                              data.yData,
-                                                      dataLabelSettings:
-                                                          const DataLabelSettings(
-                                                              isVisible:
-                                                                  false)),
-                                                ],
-                                              ),
-                                              Center(
-                                                child: Text(
-                                                  "35%",
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 15),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
-                          );
-                        })
-                    .animate()
-                    .fadeIn(delay: 1.5.seconds, duration: .7.seconds),
+                          ),
+                        ),
+                      );
+                    }).animate().fadeIn(delay: 2.seconds, duration: .7.seconds),
                 const SizedBox(
                   height: 20,
                 )
