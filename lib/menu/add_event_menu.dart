@@ -462,6 +462,8 @@ class _AddEventMenuState extends State<AddEventMenu> {
                                     child: ElevatedButton(
                                       onPressed: () {
                                         // Validate returns true if the form is valid, or false otherwise.
+
+                                        print(provider.timeTaskList);
                                         if (_formTaskKey.currentState!
                                             .validate()) {
                                           // If the form is valid, display a snackbar. In the real world,

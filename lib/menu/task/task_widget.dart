@@ -50,8 +50,8 @@ class _TaskWidgetState extends State<TaskWidget> {
             decoration: const InputDecoration(
               hintText: "Add Task",
             ),
-            validator: (v) {
-              if (v == null || v.trim().isEmpty) {
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
                 return 'Please enter something';
               }
               return null;
