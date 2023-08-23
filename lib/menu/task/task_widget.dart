@@ -5,11 +5,14 @@ import 'package:intl/intl.dart';
 class TaskWidget extends StatefulWidget {
   final String? initialValue;
   final void Function(String) onChanged;
-
+  final String? timeInitialValue;
+  final void Function(DateTime?) onTimeChange;
   const TaskWidget({
     super.key,
     this.initialValue,
     required this.onChanged,
+    this.timeInitialValue,
+    required this.onTimeChange,
   });
 
   @override
@@ -18,17 +21,21 @@ class TaskWidget extends StatefulWidget {
 
 class _TaskWidgetState extends State<TaskWidget> {
   late final TextEditingController _controller;
+  late final TextEditingController _tcontroller;
 
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController();
     _controller.text = widget.initialValue ?? '';
+    _tcontroller = TextEditingController();
+    _tcontroller.text = widget.timeInitialValue ?? '';
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    _tcontroller.dispose();
     super.dispose();
   }
 
@@ -55,14 +62,16 @@ class _TaskWidgetState extends State<TaskWidget> {
           width: 10,
         ),
         SizedBox(
-          width: 140,
+          width: 150,
           child: DateTimeField(
+            onChanged: widget.onTimeChange,
+            controller: _tcontroller,
             decoration: const InputDecoration(
                 suffixIcon: Icon(
                   Icons.calendar_month,
                 ),
                 hintText: 'Deadline'),
-            format: DateFormat('dd-MM-yyyy'),
+            format: DateFormat('yyyy-MM-dd HH:mm'),
             onShowPicker: (context, currentValue) async {
               return await showDatePicker(
                 context: context,

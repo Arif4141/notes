@@ -412,6 +412,11 @@ class _AddEventMenuState extends State<AddEventMenu> {
                                                   provider.taskList[index],
                                               onChanged: (v) =>
                                                   provider.taskList[index] = v,
+                                              timeInitialValue:
+                                                  provider.timeTaskList[index],
+                                              onTimeChange: (t) =>
+                                                  provider.timeTaskList[index] =
+                                                      t.toString(),
                                             ),
                                             const SizedBox(
                                               height: 10,

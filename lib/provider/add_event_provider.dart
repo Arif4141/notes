@@ -7,6 +7,8 @@ class AddEventProvider extends ChangeNotifier {
   int get dynamicList => _dynamicList;
   List<String> _taskList = [''];
   List<String> get taskList => _taskList;
+  List<String> _timeTaskList = [''];
+  List<String> get timeTaskList => _timeTaskList;
 
   set setCurrentPage(val) {
     _currentPage = val;
@@ -15,16 +17,19 @@ class AddEventProvider extends ChangeNotifier {
 
   set resetWidget(val) {
     _taskList = val;
+    _timeTaskList = val;
     notifyListeners();
   }
 
   void addWidget() {
     _taskList.add('');
+    _timeTaskList.add('');
     notifyListeners();
   }
 
   void removeWidget(index) {
     _taskList.removeAt(index);
+    _timeTaskList.removeAt(index);
     notifyListeners();
   }
 }

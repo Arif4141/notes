@@ -1,15 +1,23 @@
 // import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:hive_flutter/adapters.dart';
+import 'package:notes/adapter/task_adapter.dart';
 import 'package:notes/menu/main_menu.dart';
 import 'package:notes/provider/animated_container_provider.dart';
 import 'package:provider/provider.dart';
 
+import 'adapter/note_adapter.dart';
 import 'provider/add_event_provider.dart';
 import 'provider/theme_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  Hive.registerAdapter(NotesAdapter());
+  Hive.registerAdapter(TaskAdapter());
+  await Hive.openBox('notes');
+  await Hive.openBox('tasks');
   Animate.restartOnHotReload = true;
   //Notifications
 
